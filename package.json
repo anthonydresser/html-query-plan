@@ -27,6 +27,7 @@
     "svgjs": "^2.2.5"
   },
   "scripts": {
+    "compile": "gulp compile",
     "webpack": "webpack",
     "watch:webpack": "webpack --watch",
     "test": "karma start karma.config.js --singleRun",
