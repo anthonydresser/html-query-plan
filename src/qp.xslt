@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:msxsl="urn:schemas-microsoft-com:xslt"
   xmlns:exslt="http://exslt.org/common"
@@ -110,7 +110,7 @@
       <xsl:call-template name="ToolTipRow">
         <xsl:with-param name="Condition" select="@PhysicalOp" />
         <xsl:with-param name="Label">Physical Operation</xsl:with-param>
-        <xsl:with-param name="Value">
+        <xsl:with-param name="Value">          
           <xsl:apply-templates select="." mode="PhysicalOperation" />
         </xsl:with-param>
       </xsl:call-template>
@@ -154,7 +154,6 @@
           </xsl:choose>
         </xsl:with-param>
       </xsl:call-template>
-
       <xsl:call-template name="ToolTipRow">
         <xsl:with-param name="Label">Estimated Execution Mode</xsl:with-param>
         <xsl:with-param name="Value" select="@EstimatedExecutionMode" />
@@ -274,19 +273,28 @@
         <xsl:with-param name="Label">Estimated Row Size</xsl:with-param>
         <xsl:with-param name="Value" select="concat(@AvgRowSize, ' B')" />
       </xsl:call-template>
+<<<<<<< HEAD
 
+=======
+>>>>>>> fixed missmatch in xslt
       <xsl:call-template name="ToolTipRow">
         <xsl:with-param name="Condition" select="s:RunTimeInformation" />
         <xsl:with-param name="Label">Actual Rebinds</xsl:with-param>
         <xsl:with-param name="Value" select="sum(s:RunTimeInformation/s:RunTimeCountersPerThread/@ActualRebinds)" />
       </xsl:call-template>
+<<<<<<< HEAD
 
+=======
+>>>>>>> fixed missmatch in xslt
       <xsl:call-template name="ToolTipRow">
         <xsl:with-param name="Condition" select="s:RunTimeInformation" />
         <xsl:with-param name="Label">Actual Rewinds</xsl:with-param>
         <xsl:with-param name="Value" select="sum(s:RunTimeInformation/s:RunTimeCountersPerThread/@ActualRewinds)" />
       </xsl:call-template>
+<<<<<<< HEAD
 
+=======
+>>>>>>> fixed missmatch in xslt
       <xsl:call-template name="ToolTipRow">
         <xsl:with-param name="Condition" select="s:IndexScan/@Ordered" />
         <xsl:with-param name="Label">Ordered</xsl:with-param>
@@ -317,13 +325,13 @@
     <xsl:value-of select="@PhysicalOp" />
   </xsl:template>
   <xsl:template match="s:RelOp[s:IndexScan/@Lookup]" mode="PhysicalOperation">Key Lookup</xsl:template>
-
+  
   <!-- Gets the Logical Operation -->
   <xsl:template match="s:RelOp" mode="LogicalOperation">
     <xsl:value-of select="@LogicalOp" />
   </xsl:template>
   <xsl:template match="s:RelOp[s:IndexScan/@Lookup]" mode="LogicalOperation">Key Lookup</xsl:template>
-
+  
   <!-- Calculates the estimated operator cost. -->
   <xsl:template name="EstimatedOperatorCost">
     <xsl:variable name="EstimatedTotalSubtreeCost">
@@ -394,7 +402,7 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
-
+  
   <xsl:template match="s:Object | s:ColumnReference" mode="ObjectNameNoAlias">
     <xsl:for-each select="@Database | @Schema | @Table | @Index | @Column">
       <xsl:value-of select="." />
@@ -402,7 +410,7 @@
     </xsl:for-each>
   </xsl:template>
 
-  <!-- Displays the node cost label. -->
+  <!-- Displays the node cost label. -->    
   <xsl:template match="s:RelOp" mode="NodeCostLabel">
     <xsl:variable name="EstimatedOperatorCost"><xsl:call-template name="EstimatedOperatorCost" /></xsl:variable>
     <xsl:variable name="TotalCost"><xsl:value-of select="ancestor::s:QueryPlan/s:RelOp/@EstimatedTotalSubtreeCost" /></xsl:variable>
@@ -416,7 +424,7 @@
     <div>Cost: 0%</div>
   </xsl:template>
 
-  <!--
+  <!-- 
   ================================
   Tool tip detail sections
   ================================
@@ -497,7 +505,7 @@
     </xsl:for-each>
   </xsl:template>
 
-  <!--
+  <!-- 
   Seek Predicates Tooltip
   -->
 
@@ -643,12 +651,12 @@
   <xsl:template match="*[s:CursorPlan/@CursorActualType = 'Dynamic']" mode="NodeLabel">Dynamic</xsl:template>
   <xsl:template match="*[s:CursorPlan/@CursorActualType = 'FastForward']" mode="NodeLabel">Fast Forward</xsl:template>
   <xsl:template match="*[s:CursorPlan/@CursorActualType = 'Keyset']" mode="NodeLabel">Keyset</xsl:template>
-  <xsl:template match="*[s:CursorPlan/@CursorActualType = 'SnapShot']" mode="NodeLabel">Snapshot</xsl:template>
+  <xsl:template match="*[s:CursorPlan/@CursorActualType = 'SnapShot']" mode="NodeLabel">Snapshot</xsl:template>  
 
   <xsl:template match="*[@OperationType = 'FetchQuery']" mode="NodeLabel">Fetch Query</xsl:template>
   <xsl:template match="*[@OperationType = 'PopulateQuery']" mode="NodeLabel">Population Query</xsl:template>
   <xsl:template match="*[@OperationType = 'RefreshQuery']" mode="NodeLabel">Refresh Query</xsl:template>
-
+  
   <!--
   ================================
   Node alternate labels
@@ -665,7 +673,7 @@
     </xsl:variable>
     <div>
       <xsl:value-of select="substring($ObjectName, 0, 36)" />
-      <xsl:if test="string-length($ObjectName) >= 36">…</xsl:if>
+      <xsl:if test="string-length($ObjectName) >= 36">\u2026</xsl:if>
     </div>
   </xsl:template>
 
@@ -677,7 +685,7 @@
   <!-- Disable the default template -->
   <xsl:template match="*" mode="NodeLabel2" />
 
-  <!--
+  <!-- 
   ================================
   Tool tip descriptions
   ================================
@@ -699,11 +707,11 @@
 
   <xsl:template match="*[@PhysicalOp = 'Parallelism' and @LogicalOp='Repartition Streams']" mode="ToolTipDescription">Repartition Streams.</xsl:template>
   <xsl:template match="*[@PhysicalOp = 'Parallelism']" mode="ToolTipDescription">An operation involving parallelism.</xsl:template>
-
+  
   <xsl:template match="*[s:TableScan]" mode="ToolTipDescription">Scan rows from a table.</xsl:template>
   <xsl:template match="*[s:NestedLoops]" mode="ToolTipDescription">For each row in the top (outer) input, scan the bottom (inner) input, and output matching rows.</xsl:template>
   <xsl:template match="*[s:Top]" mode="ToolTipDescription">Select the first few rows based on a sort order.</xsl:template>
-
+  
   <xsl:template match="*[@OperationType='FetchQuery']" mode="ToolTipDescription">The query used to retrieve rows when a fetch is issued against a cursor.</xsl:template>
   <xsl:template match="*[@OperationType='PopulateQuery']" mode="ToolTipDescription">The query used to populate a cursor's work table when the cursor is opened.</xsl:template>
   <xsl:template match="*[s:CursorPlan/@CursorActualType='FastForward']" mode="ToolTipDescription">Fast Forward.</xsl:template>
@@ -711,7 +719,7 @@
   <xsl:template match="*[s:CursorPlan/@CursorActualType='Keyset']" mode="ToolTipDescription">Cursor that can see updates made by others, but not inserts.</xsl:template>
   <xsl:template match="*[s:CursorPlan/@CursorActualType='SnapShot']" mode="ToolTipDescription">A cursor that does not see changes made by others.</xsl:template>
 
-  <!--
+  <!-- 
   ================================
   Number handling
   ================================
@@ -729,7 +737,7 @@
     </xsl:variable>
     <xsl:value-of select="format-number(round(number($number) * 10000000) div 10000000, '0.#######')" />
   </xsl:template>
-
+  
   <!-- Template for handling of scientific numbers
   See: http://www.orm-designer.com/article/xslt-convert-scientific-notation-to-decimal-number -->
   <xsl:variable name="max-exp">
@@ -746,7 +754,7 @@
     <xsl:choose>
       <xsl:when test="number($numInput) = $numInput">
         <xsl:value-of select="$numInput" />
-      </xsl:when>
+      </xsl:when> 
       <xsl:otherwise>
         <!-- ==== Mantisa ==== -->
         <xsl:variable name="numMantisa">
