@@ -1018,8 +1018,8 @@
         <xsl:value-of select="format-number(round(number($number) * 10000000) div 10000000, '0.#######')" /> </xsl:template>
     <!-- Template for handling of scientific numbers  See: http://www.orm-designer.com/article/xslt-convert-scientific-notation-to-decimal-number -->
     <xsl:variable name="max-exp">
-        <xsl:value-of select=\
-            "'0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'" /> </xsl:variable>
+        <xsl:value-of select="'0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'"
+        /> </xsl:variable>
     <xsl:template name="convertSciToNumString">
         <xsl:param name="inputVal" select="0" />
         <xsl:variable name="numInput">
