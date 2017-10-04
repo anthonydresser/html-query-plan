@@ -511,9 +511,9 @@
       <div>
         <xsl:apply-templates select="s:ColumnReference" mode="ObjectName" />
         <xsl:choose>
-            <xsl:when test=\ "number($EstimatedTotalSubtreeCost) - number($TotalChildEstimatedSubtreeCost) &lt; 0\">0</xsl:when>
+            <xsl:when test="number($EstimatedTotalSubtreeCost) - number($TotalChildEstimatedSubtreeCost) &lt; 0">0</xsl:when>
             <xsl:otherwise>
-                <xsl:value-of select=\ "number($EstimatedTotalSubtreeCost) - number($TotalChildEstimatedSubtreeCost)\" /> </xsl:otherwise>
+                <xsl:value-of select="number($EstimatedTotalSubtreeCost) - number($TotalChildEstimatedSubtreeCost)" /> </xsl:otherwise>
         </xsl:choose>
       </div>
     </xsl:for-each>
@@ -789,272 +789,272 @@
               <xsl:value-of select="substring-after($numInput,'E+')" />
             </xsl:when>
             <xsl:otherwise>
-                <xsl:for-each select=\ "@Database | @Schema | @Table | @Index | @Column | @Alias\">
-                    <xsl:value-of select=\ ".\" />
-                    <xsl:if test=\ "position() != last()\">.</xsl:if>
+                <xsl:for-each select="@Database | @Schema | @Table | @Index | @Column | @Alias">
+                    <xsl:value-of select="." />
+                    <xsl:if test="position() != last()">.</xsl:if>
                 </xsl:for-each>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
-    <xsl:template match=\ "s:Object | s:ColumnReference\" mode=\ "ObjectNameNoAlias\">
-        <xsl:for-each select=\ "@Database | @Schema | @Table | @Index | @Column\">
-            <xsl:value-of select=\ ".\" />
-            <xsl:if test=\ "position() != last()\">.</xsl:if>
+    <xsl:template match="s:Object | s:ColumnReference" mode="ObjectNameNoAlias">
+        <xsl:for-each select="@Database | @Schema | @Table | @Index | @Column">
+            <xsl:value-of select="." />
+            <xsl:if test="position() != last()">.</xsl:if>
         </xsl:for-each>
     </xsl:template>
     <!-- Displays the node cost label. -->
-    <xsl:template match=\ "s:RelOp\" mode=\ "NodeCostLabel\">
-        <xsl:variable name=\ "EstimatedOperatorCost\">
-            <xsl:call-template name=\ "EstimatedOperatorCost\" /> </xsl:variable>
-        <xsl:variable name=\ "TotalCost\">
-            <xsl:value-of select=\ "ancestor::s:QueryPlan/s:RelOp/@EstimatedTotalSubtreeCost\" /> </xsl:variable>
+    <xsl:template match="s:RelOp" mode="NodeCostLabel">
+        <xsl:variable name="EstimatedOperatorCost">
+            <xsl:call-template name="EstimatedOperatorCost" /> </xsl:variable>
+        <xsl:variable name="TotalCost">
+            <xsl:value-of select="ancestor::s:QueryPlan/s:RelOp/@EstimatedTotalSubtreeCost" /> </xsl:variable>
         <div> Cost:
-            <xsl:value-of select=\ "format-number(number($EstimatedOperatorCost) div number($TotalCost), '0%')\" /> </div>
+            <xsl:value-of select="format-number(number($EstimatedOperatorCost) div number($TotalCost), '0%')" /> </div>
     </xsl:template>
     <!-- Dont show the node cost for statements. -->
-    <xsl:template match=\ "s:StmtSimple|s:StmtUseDb\" mode=\ "NodeCostLabel\" />
-    <xsl:template match=\ "s:StmtCursor|s:Operation|s:StmtCond\" mode=\ "NodeCostLabel\">
+    <xsl:template match="s:StmtSimple|s:StmtUseDb" mode="NodeCostLabel" />
+    <xsl:template match="s:StmtCursor|s:Operation|s:StmtCond" mode="NodeCostLabel">
         <div>Cost: 0%</div>
     </xsl:template>
     <!--   ================================  Tool tip detail sections  ================================  The following section contains templates used for writing the detail sections at the bottom of the tool tip,  for example listing outputs, or information about the object to which an operator applies.  -->
-    <xsl:template match=\ "*/s:Object\" mode=\ "ToolTipDetails\">
+    <xsl:template match="*/s:Object" mode="ToolTipDetails">
         <!-- TODO: Make sure this works all the time -->
-        <div class=\ "qp-bold\">Object</div>
+        <div class="qp-bold">Object</div>
         <div>
-            <xsl:apply-templates select=\ ".\" mode=\ "ObjectName\" /> </div>
+            <xsl:apply-templates select="." mode="ObjectName" /> </div>
     </xsl:template>
-    <xsl:template match=\ "s:SetPredicate[s:ScalarOperator/@ScalarString]\" mode=\ "ToolTipDetails\">
-        <div class=\ "qp-bold\">Predicate</div>
+    <xsl:template match="s:SetPredicate[s:ScalarOperator/@ScalarString]" mode="ToolTipDetails">
+        <div class="qp-bold">Predicate</div>
         <div>
-            <xsl:value-of select=\ "s:ScalarOperator/@ScalarString\" /> </div>
+            <xsl:value-of select="s:ScalarOperator/@ScalarString" /> </div>
     </xsl:template>
-    <xsl:template match=\ "s:Predicate[s:ScalarOperator/@ScalarString]\" mode=\ "ToolTipDetails\">
-        <div class=\ "qp-bold\">Predicate</div>
+    <xsl:template match="s:Predicate[s:ScalarOperator/@ScalarString]" mode="ToolTipDetails">
+        <div class="qp-bold">Predicate</div>
         <div>
-            <xsl:value-of select=\ "s:ScalarOperator/@ScalarString\" /> </div>
+            <xsl:value-of select="s:ScalarOperator/@ScalarString" /> </div>
     </xsl:template>
-    <xsl:template match=\ "s:TopExpression[s:ScalarOperator/@ScalarString]\" mode=\ "ToolTipDetails\">
-        <div class=\ "qp-bold\">Top Expression</div>
+    <xsl:template match="s:TopExpression[s:ScalarOperator/@ScalarString]" mode="ToolTipDetails">
+        <div class="qp-bold">Top Expression</div>
         <div>
-            <xsl:value-of select=\ "s:ScalarOperator/@ScalarString\" /> </div>
+            <xsl:value-of select="s:ScalarOperator/@ScalarString" /> </div>
     </xsl:template>
-    <xsl:template match=\ "s:OutputList[count(s:ColumnReference) > 0]\" mode=\ "ToolTipDetails\">
-        <div class=\ "qp-bold\">Output List</div>
-        <xsl:for-each select=\ "s:ColumnReference\">
+    <xsl:template match="s:OutputList[count(s:ColumnReference) > 0]" mode="ToolTipDetails">
+        <div class="qp-bold">Output List</div>
+        <xsl:for-each select="s:ColumnReference">
             <div>
-                <xsl:apply-templates select=\ ".\" mode=\ "ObjectName\" /> </div>
+                <xsl:apply-templates select="." mode="ObjectName" /> </div>
         </xsl:for-each>
     </xsl:template>
-    <xsl:template match=\ "s:NestedLoops/s:OuterReferences[count(s:ColumnReference) > 0]\" mode=\ "ToolTipDetails\">
-        <div class=\ "qp-bold\">Outer References</div>
-        <xsl:for-each select=\ "s:ColumnReference\">
+    <xsl:template match="s:NestedLoops/s:OuterReferences[count(s:ColumnReference) > 0]" mode="ToolTipDetails">
+        <div class="qp-bold">Outer References</div>
+        <xsl:for-each select="s:ColumnReference">
             <div>
-                <xsl:apply-templates select=\ ".\" mode=\ "ObjectName\" /> </div>
+                <xsl:apply-templates select="." mode="ObjectName" /> </div>
         </xsl:for-each>
     </xsl:template>
-    <xsl:template match=\ "@StatementText\" mode=\ "ToolTipDetails\">
-        <div class=\ "qp-bold\">Statement</div>
+    <xsl:template match="@StatementText" mode="ToolTipDetails">
+        <div class="qp-bold">Statement</div>
         <div>
-            <xsl:value-of select=\ ".\" /> </div>
+            <xsl:value-of select="." /> </div>
     </xsl:template>
-    <xsl:template match=\ "s:Sort/s:OrderBy[count(s:OrderByColumn/s:ColumnReference) > 0]\" mode=\ "ToolTipDetails\">
-        <div class=\ "qp-bold\">Order By</div>
-        <xsl:for-each select=\ "s:OrderByColumn\">
+    <xsl:template match="s:Sort/s:OrderBy[count(s:OrderByColumn/s:ColumnReference) > 0]" mode="ToolTipDetails">
+        <div class="qp-bold">Order By</div>
+        <xsl:for-each select="s:OrderByColumn">
             <div>
-                <xsl:apply-templates select=\ "s:ColumnReference\" mode=\ "ObjectName\" />
+                <xsl:apply-templates select="s:ColumnReference" mode="ObjectName" />
                 <xsl:choose>
-                    <xsl:when test=\ "@Ascending = 'true'\"> Ascending</xsl:when>
-                    <xsl:when test=\ "@Ascending = 1\"> Ascending</xsl:when>
+                    <xsl:when test="@Ascending = 'true'"> Ascending</xsl:when>
+                    <xsl:when test="@Ascending = 1"> Ascending</xsl:when>
                     <xsl:otherwise> Descending</xsl:otherwise>
                 </xsl:choose>
             </div>
         </xsl:for-each>
     </xsl:template>
     <!--   Seek Predicates Tooltip  -->
-    <xsl:template match=\ "s:SeekPredicates\" mode=\ "ToolTipDetails\">
-        <div class=\ "qp-bold\">Seek Predicates</div>
+    <xsl:template match="s:SeekPredicates" mode="ToolTipDetails">
+        <div class="qp-bold">Seek Predicates</div>
         <div>
-            <xsl:for-each select=\ "s:SeekPredicateNew/s:SeekKeys\">
-                <xsl:call-template name=\ "SeekKeyDetail\">
-                    <xsl:with-param name=\ "position\" select=\ "position()\" /> </xsl:call-template>
-                <xsl:if test=\ "position() != last()\">, </xsl:if>
+            <xsl:for-each select="s:SeekPredicateNew/s:SeekKeys">
+                <xsl:call-template name="SeekKeyDetail">
+                    <xsl:with-param name="position" select="position()" /> </xsl:call-template>
+                <xsl:if test="position() != last()">, </xsl:if>
             </xsl:for-each>
         </div>
     </xsl:template>
-    <xsl:template name=\ "SeekKeyDetail\">
-        <xsl:param name=\ "position\" />Seek Keys[
-        <xsl:value-of select=\ "$position\" />]:
-        <xsl:for-each select=\ "s:Prefix|s:StartRange|s:EndRange\">
+    <xsl:template name="SeekKeyDetail">
+        <xsl:param name="position" />Seek Keys[
+        <xsl:value-of select="$position" />]:
+        <xsl:for-each select="s:Prefix|s:StartRange|s:EndRange">
             <xsl:choose>
-                <xsl:when test=\ "self::s:Prefix\">Prefix: </xsl:when>
-                <xsl:when test=\ "self::s:StartRange\">Start: </xsl:when>
-                <xsl:when test=\ "self::s:EndRange\">End: </xsl:when>
+                <xsl:when test="self::s:Prefix">Prefix: </xsl:when>
+                <xsl:when test="self::s:StartRange">Start: </xsl:when>
+                <xsl:when test="self::s:EndRange">End: </xsl:when>
             </xsl:choose>
-            <xsl:for-each select=\ "s:RangeColumns/s:ColumnReference\">
-                <xsl:apply-templates select=\ ".\" mode=\ "ObjectNameNoAlias\" />
-                <xsl:if test=\ "position() != last()\">, </xsl:if>
+            <xsl:for-each select="s:RangeColumns/s:ColumnReference">
+                <xsl:apply-templates select="." mode="ObjectNameNoAlias" />
+                <xsl:if test="position() != last()">, </xsl:if>
             </xsl:for-each>
             <xsl:choose>
-                <xsl:when test=\ "@ScanType = 'EQ'\"> = </xsl:when>
-                <xsl:when test=\ "@ScanType = 'LT'\"> &lt; </xsl:when>
-                <xsl:when test=\ "@ScanType = 'GT'\"> > </xsl:when>
-                <xsl:when test=\ "@ScanType = 'LE'\"> &lt;= </xsl:when>
-                <xsl:when test=\ "@ScanType = 'GE'\"> >= </xsl:when>
+                <xsl:when test="@ScanType = 'EQ'"> = </xsl:when>
+                <xsl:when test="@ScanType = 'LT'"> &lt; </xsl:when>
+                <xsl:when test="@ScanType = 'GT'"> > </xsl:when>
+                <xsl:when test="@ScanType = 'LE'"> &lt;= </xsl:when>
+                <xsl:when test="@ScanType = 'GE'"> >= </xsl:when>
             </xsl:choose>
-            <xsl:for-each select=\ "s:RangeExpressions/s:ScalarOperator\"> Scalar Operator(
-                <xsl:value-of select=\ "@ScalarString\" />)
-                <xsl:if test=\ "position() != last()\">, </xsl:if>
+            <xsl:for-each select="s:RangeExpressions/s:ScalarOperator"> Scalar Operator(
+                <xsl:value-of select="@ScalarString" />)
+                <xsl:if test="position() != last()">, </xsl:if>
             </xsl:for-each>
-            <xsl:if test=\ "position() != last()\">, </xsl:if>
+            <xsl:if test="position() != last()">, </xsl:if>
         </xsl:for-each>
     </xsl:template>
     <!--   ================================  Node icons  ================================  The following templates determine what icon should be shown for a given node  -->
-    <!-- Use the logical operation to determine the icon for the \"Parallelism\" operators. -->
-    <xsl:template match=\ "s:RelOp[@PhysicalOp = 'Parallelism']\" mode=\ "NodeIcon\" priority=\ "1\">
-        <xsl:element name=\ "div\">
-            <xsl:attribute name=\ "class\"> qp-icon-
-                <xsl:value-of select=\ "translate(@LogicalOp, ' ', '')\" /> </xsl:attribute>
+    <!-- Use the logical operation to determine the icon for the "Parallelism" operators. -->
+    <xsl:template match="s:RelOp[@PhysicalOp = 'Parallelism']" mode="NodeIcon" priority="1">
+        <xsl:element name="div">
+            <xsl:attribute name="class"> qp-icon-
+                <xsl:value-of select="translate(@LogicalOp, ' ', '')" /> </xsl:attribute>
         </xsl:element>
     </xsl:template>
-    <xsl:template match=\ "*[s:CursorPlan/@CursorActualType]\" mode=\ "NodeIcon\" priority=\ "1\">
-        <xsl:element name=\ "div\">
-            <xsl:attribute name=\ "class\"> qp-icon-
-                <xsl:value-of select=\ "s:CursorPlan/@CursorActualType\" /> </xsl:attribute>
+    <xsl:template match="*[s:CursorPlan/@CursorActualType]" mode="NodeIcon" priority="1">
+        <xsl:element name="div">
+            <xsl:attribute name="class"> qp-icon-
+                <xsl:value-of select="s:CursorPlan/@CursorActualType" /> </xsl:attribute>
         </xsl:element>
     </xsl:template>
-    <xsl:template match=\ "*[@OperationType]\" mode=\ "NodeIcon\" priority=\ "1\">
-        <xsl:element name=\ "div\">
-            <xsl:attribute name=\ "class\"> qp-icon-
-                <xsl:value-of select=\ "@OperationType\" /> </xsl:attribute>
+    <xsl:template match="*[@OperationType]" mode="NodeIcon" priority="1">
+        <xsl:element name="div">
+            <xsl:attribute name="class"> qp-icon-
+                <xsl:value-of select="@OperationType" /> </xsl:attribute>
         </xsl:element>
     </xsl:template>
-    <xsl:template match=\ "s:RelOp[s:IndexScan/@Lookup]\" mode=\ "NodeIcon\" priority=\ "1\">
-        <div class=\ "qp-icon-KeyLookup\"></div>
+    <xsl:template match="s:RelOp[s:IndexScan/@Lookup]" mode="NodeIcon" priority="1">
+        <div class="qp-icon-KeyLookup"></div>
     </xsl:template>
-    <xsl:template match=\ "s:RelOp[s:TableValuedFunction]\" mode=\ "NodeIcon\" priority=\ "1\">
-        <div class=\ "qp-icon-TableValuedFunction\"></div>
+    <xsl:template match="s:RelOp[s:TableValuedFunction]" mode="NodeIcon" priority="1">
+        <div class="qp-icon-TableValuedFunction"></div>
     </xsl:template>
     <!-- Use the physical operation to determine icon if it is present. -->
-    <xsl:template match=\ "*[@PhysicalOp]\" mode=\ "NodeIcon\">
-        <xsl:element name=\ "div\">
-            <xsl:attribute name=\ "class\"> qp-icon-
-                <xsl:value-of select=\ "translate(@PhysicalOp, ' ', '')\" /> </xsl:attribute>
+    <xsl:template match="*[@PhysicalOp]" mode="NodeIcon">
+        <xsl:element name="div">
+            <xsl:attribute name="class"> qp-icon-
+                <xsl:value-of select="translate(@PhysicalOp, ' ', '')" /> </xsl:attribute>
         </xsl:element>
     </xsl:template>
     <!-- Matches all statements. -->
-    <xsl:template match=\ "s:StmtSimple\" mode=\ "NodeIcon\">
-        <div class=\ "qp-icon-Statement\"></div>
+    <xsl:template match="s:StmtSimple" mode="NodeIcon">
+        <div class="qp-icon-Statement"></div>
     </xsl:template>
-    <xsl:template match=\ "s:StmtCursor\" mode=\ "NodeIcon\">
-        <div class=\ "qp-icon-StmtCursor\"></div>
+    <xsl:template match="s:StmtCursor" mode="NodeIcon">
+        <div class="qp-icon-StmtCursor"></div>
     </xsl:template>
     <!-- Fallback template - show the Bitmap icon. -->
-    <xsl:template match=\ "*\" mode=\ "NodeIcon\">
-        <div class=\ "qp-icon-Catchall\"></div>
+    <xsl:template match="*" mode="NodeIcon">
+        <div class="qp-icon-Catchall"></div>
     </xsl:template>
     <!--   ================================  Node labels  ================================  The following section contains templates used to determine the first (main) label for a node.  -->
-    <xsl:template match=\ "s:RelOp\" mode=\ "NodeLabel\">
-        <xsl:value-of select=\ "@PhysicalOp\" /> </xsl:template>
-    <xsl:template match=\ "s:RelOp[s:IndexScan/@Lookup]\" mode=\ "NodeLabel\">Key Lookup (Clustered)</xsl:template>
-    <xsl:template match=\ "*[@StatementType]\" mode=\ "NodeLabel\">
-        <xsl:value-of select=\ "@StatementType\" /> </xsl:template>
-    <xsl:template match=\ "*[s:CursorPlan/@CursorActualType = 'Dynamic']\" mode=\ "NodeLabel\">Dynamic</xsl:template>
-    <xsl:template match=\ "*[s:CursorPlan/@CursorActualType = 'FastForward']\" mode=\ "NodeLabel\">Fast Forward</xsl:template>
-    <xsl:template match=\ "*[s:CursorPlan/@CursorActualType = 'Keyset']\" mode=\ "NodeLabel\">Keyset</xsl:template>
-    <xsl:template match=\ "*[s:CursorPlan/@CursorActualType = 'SnapShot']\" mode=\ "NodeLabel\">Snapshot</xsl:template>
-    <xsl:template match=\ "*[@OperationType = 'FetchQuery']\" mode=\ "NodeLabel\">Fetch Query</xsl:template>
-    <xsl:template match=\ "*[@OperationType = 'PopulateQuery']\" mode=\ "NodeLabel\">Population Query</xsl:template>
-    <xsl:template match=\ "*[@OperationType = 'RefreshQuery']\" mode=\ "NodeLabel\">Refresh Query</xsl:template>
+    <xsl:template match="s:RelOp" mode="NodeLabel">
+        <xsl:value-of select="@PhysicalOp" /> </xsl:template>
+    <xsl:template match="s:RelOp[s:IndexScan/@Lookup]" mode="NodeLabel">Key Lookup (Clustered)</xsl:template>
+    <xsl:template match="*[@StatementType]" mode="NodeLabel">
+        <xsl:value-of select="@StatementType" /> </xsl:template>
+    <xsl:template match="*[s:CursorPlan/@CursorActualType = 'Dynamic']" mode="NodeLabel">Dynamic</xsl:template>
+    <xsl:template match="*[s:CursorPlan/@CursorActualType = 'FastForward']" mode="NodeLabel">Fast Forward</xsl:template>
+    <xsl:template match="*[s:CursorPlan/@CursorActualType = 'Keyset']" mode="NodeLabel">Keyset</xsl:template>
+    <xsl:template match="*[s:CursorPlan/@CursorActualType = 'SnapShot']" mode="NodeLabel">Snapshot</xsl:template>
+    <xsl:template match="*[@OperationType = 'FetchQuery']" mode="NodeLabel">Fetch Query</xsl:template>
+    <xsl:template match="*[@OperationType = 'PopulateQuery']" mode="NodeLabel">Population Query</xsl:template>
+    <xsl:template match="*[@OperationType = 'RefreshQuery']" mode="NodeLabel">Refresh Query</xsl:template>
     <!--  ================================  Node alternate labels  ================================  The following section contains templates used to determine the second label to be displayed for a node.  -->
     <!-- Display the object for any node that has one -->
-    <xsl:template match=\ "*[*/s:Object]\" mode=\ "NodeLabel2\">
-        <xsl:variable name=\ "ObjectName\">
-            <xsl:apply-templates select=\ "*/s:Object\" mode=\ "ObjectName\">
-                <xsl:with-param name=\ "ExcludeDatabaseName\" select=\ "true()\" /> </xsl:apply-templates>
+    <xsl:template match="*[*/s:Object]" mode="NodeLabel2">
+        <xsl:variable name="ObjectName">
+            <xsl:apply-templates select="*/s:Object" mode="ObjectName">
+                <xsl:with-param name="ExcludeDatabaseName" select="true()" /> </xsl:apply-templates>
         </xsl:variable>
         <div>
-            <xsl:value-of select=\ "substring($ObjectName, 0, 36)\" />
-            <xsl:if test=\ "string-length($ObjectName) >= 36\">\u2026</xsl:if>
+            <xsl:value-of select="substring($ObjectName, 0, 36)" />
+            <xsl:if test="string-length($ObjectName) >= 36">\u2026</xsl:if>
         </div>
     </xsl:template>
     <!-- Display the logical operation for any node where it is not the same as the physical operation. -->
-    <xsl:template match=\ "s:RelOp[@LogicalOp != @PhysicalOp]\" mode=\ "NodeLabel2\">
+    <xsl:template match="s:RelOp[@LogicalOp != @PhysicalOp]" mode="NodeLabel2">
         <div> (
-            <xsl:value-of select=\ "@LogicalOp\" />) </div>
+            <xsl:value-of select="@LogicalOp" />) </div>
     </xsl:template>
     <!-- Disable the default template -->
-    <xsl:template match=\ "*\" mode=\ "NodeLabel2\" />
+    <xsl:template match="*" mode="NodeLabel2" />
     <!--   ================================  Tool tip descriptions  ================================  The following section contains templates used for writing the description shown in the tool tip.  -->
-    <xsl:template match=\ "*[@PhysicalOp = 'Table Insert']\" mode=\ "ToolTipDescription\">Insert input rows into the table specified in Argument field.</xsl:template>
-    <xsl:template match=\ "*[@PhysicalOp = 'Compute Scalar']\" mode=\ "ToolTipDescription\">Compute new values from existing values in a row.</xsl:template>
-    <xsl:template match=\ "*[@PhysicalOp = 'Sort']\" mode=\ "ToolTipDescription\">Sort the input.</xsl:template>
-    <xsl:template match=\ "*[@PhysicalOp = 'Clustered Index Scan']\" mode=\ "ToolTipDescription\">Scanning a clustered index, entirely or only a range.</xsl:template>
-    <xsl:template match=\ "*[@PhysicalOp = 'Stream Aggregate']\" mode=\ "ToolTipDescription\">Compute summary values for groups of rows in a suitably sorted stream.</xsl:template>
-    <xsl:template match=\ "*[@PhysicalOp = 'Hash Match']\" mode=\ "ToolTipDescription\">Use each row from the top input to build a hash table, and each row from the bottom input to probe into the hash table,
+    <xsl:template match="*[@PhysicalOp = 'Table Insert']" mode="ToolTipDescription">Insert input rows into the table specified in Argument field.</xsl:template>
+    <xsl:template match="*[@PhysicalOp = 'Compute Scalar']" mode="ToolTipDescription">Compute new values from existing values in a row.</xsl:template>
+    <xsl:template match="*[@PhysicalOp = 'Sort']" mode="ToolTipDescription">Sort the input.</xsl:template>
+    <xsl:template match="*[@PhysicalOp = 'Clustered Index Scan']" mode="ToolTipDescription">Scanning a clustered index, entirely or only a range.</xsl:template>
+    <xsl:template match="*[@PhysicalOp = 'Stream Aggregate']" mode="ToolTipDescription">Compute summary values for groups of rows in a suitably sorted stream.</xsl:template>
+    <xsl:template match="*[@PhysicalOp = 'Hash Match']" mode="ToolTipDescription">Use each row from the top input to build a hash table, and each row from the bottom input to probe into the hash table,
         outputting all matching rows.</xsl:template>
-    <xsl:template match=\ "*[@PhysicalOp = 'Bitmap']\" mode=\ "ToolTipDescription\">Bitmap.</xsl:template>
-    <xsl:template match=\ "*[@PhysicalOp = 'Clustered Index Seek']\" mode=\ "ToolTipDescription\">Scanning a particular range of rows from a clustered index.</xsl:template>
-    <xsl:template match=\ "*[@PhysicalOp = 'Index Seek']\" mode=\ "ToolTipDescription\">Scan a particular range of rows from a nonclustered index.</xsl:template>
-    <xsl:template match=\ "*[s:IndexScan/@Lookup]\" mode=\ "ToolTipDescription\">Uses a supplied clustering key to lookup on a table that has a clustered index.</xsl:template>
-    <xsl:template match=\ "*[@PhysicalOp = 'Parallelism' and @LogicalOp='Repartition Streams']\" mode=\ "ToolTipDescription\">Repartition Streams.</xsl:template>
-    <xsl:template match=\ "*[@PhysicalOp = 'Parallelism']\" mode=\ "ToolTipDescription\">An operation involving parallelism.</xsl:template>
-    <xsl:template match=\ "*[s:TableScan]\" mode=\ "ToolTipDescription\">Scan rows from a table.</xsl:template>
-    <xsl:template match=\ "*[s:NestedLoops]\" mode=\ "ToolTipDescription\">For each row in the top (outer) input, scan the bottom (inner) input, and output matching rows.</xsl:template>
-    <xsl:template match=\ "*[s:Top]\" mode=\ "ToolTipDescription\">Select the first few rows based on a sort order.</xsl:template>
-    <xsl:template match=\ "*[@OperationType='FetchQuery']\" mode=\ "ToolTipDescription\">The query used to retrieve rows when a fetch is issued against a cursor.</xsl:template>
-    <xsl:template match=\ "*[@OperationType='PopulateQuery']\" mode=\ "ToolTipDescription\">The query used to populate a cursor's work table when the cursor is opened.</xsl:template>
-    <xsl:template match=\ "*[s:CursorPlan/@CursorActualType='FastForward']\" mode=\ "ToolTipDescription\">Fast Forward.</xsl:template>
-    <xsl:template match=\ "*[s:CursorPlan/@CursorActualType='Dynamic']\" mode=\ "ToolTipDescription\">Cursor that can see all changes made by others.</xsl:template>
-    <xsl:template match=\ "*[s:CursorPlan/@CursorActualType='Keyset']\" mode=\ "ToolTipDescription\">Cursor that can see updates made by others, but not inserts.</xsl:template>
-    <xsl:template match=\ "*[s:CursorPlan/@CursorActualType='SnapShot']\" mode=\ "ToolTipDescription\">A cursor that does not see changes made by others.</xsl:template>
+    <xsl:template match="*[@PhysicalOp = 'Bitmap']" mode="ToolTipDescription">Bitmap.</xsl:template>
+    <xsl:template match="*[@PhysicalOp = 'Clustered Index Seek']" mode="ToolTipDescription">Scanning a particular range of rows from a clustered index.</xsl:template>
+    <xsl:template match="*[@PhysicalOp = 'Index Seek']" mode="ToolTipDescription">Scan a particular range of rows from a nonclustered index.</xsl:template>
+    <xsl:template match="*[s:IndexScan/@Lookup]" mode="ToolTipDescription">Uses a supplied clustering key to lookup on a table that has a clustered index.</xsl:template>
+    <xsl:template match="*[@PhysicalOp = 'Parallelism' and @LogicalOp='Repartition Streams']" mode="ToolTipDescription">Repartition Streams.</xsl:template>
+    <xsl:template match="*[@PhysicalOp = 'Parallelism']" mode="ToolTipDescription">An operation involving parallelism.</xsl:template>
+    <xsl:template match="*[s:TableScan]" mode="ToolTipDescription">Scan rows from a table.</xsl:template>
+    <xsl:template match="*[s:NestedLoops]" mode="ToolTipDescription">For each row in the top (outer) input, scan the bottom (inner) input, and output matching rows.</xsl:template>
+    <xsl:template match="*[s:Top]" mode="ToolTipDescription">Select the first few rows based on a sort order.</xsl:template>
+    <xsl:template match="*[@OperationType='FetchQuery']" mode="ToolTipDescription">The query used to retrieve rows when a fetch is issued against a cursor.</xsl:template>
+    <xsl:template match="*[@OperationType='PopulateQuery']" mode="ToolTipDescription">The query used to populate a cursor's work table when the cursor is opened.</xsl:template>
+    <xsl:template match="*[s:CursorPlan/@CursorActualType='FastForward']" mode="ToolTipDescription">Fast Forward.</xsl:template>
+    <xsl:template match="*[s:CursorPlan/@CursorActualType='Dynamic']" mode="ToolTipDescription">Cursor that can see all changes made by others.</xsl:template>
+    <xsl:template match="*[s:CursorPlan/@CursorActualType='Keyset']" mode="ToolTipDescription">Cursor that can see updates made by others, but not inserts.</xsl:template>
+    <xsl:template match="*[s:CursorPlan/@CursorActualType='SnapShot']" mode="ToolTipDescription">A cursor that does not see changes made by others.</xsl:template>
     <!--   ================================  Number handling  ================================  The following section contains templates used for handling numbers (scientific notation, rounding etc...)  -->
     <!-- Outputs a number rounded to 7 decimal places - to be used for displaying all numbers.  This template accepts numbers in scientific notation. -->
-    <xsl:template name=\ "round\">
-        <xsl:param name=\ "value\" select=\ "0\" />
-        <xsl:variable name=\ "number\">
-            <xsl:call-template name=\ "convertSciToNumString\">
-                <xsl:with-param name=\ "inputVal\" select=\ "$value\" /> </xsl:call-template>
+    <xsl:template name="round">
+        <xsl:param name="value" select="0" />
+        <xsl:variable name="number">
+            <xsl:call-template name="convertSciToNumString">
+                <xsl:with-param name="inputVal" select="$value" /> </xsl:call-template>
         </xsl:variable>
-        <xsl:value-of select=\ "format-number(round(number($number) * 10000000) div 10000000, '0.#######')\" /> </xsl:template>
+        <xsl:value-of select="format-number(round(number($number) * 10000000) div 10000000, '0.#######')" /> </xsl:template>
     <!-- Template for handling of scientific numbers  See: http://www.orm-designer.com/article/xslt-convert-scientific-notation-to-decimal-number -->
-    <xsl:variable name=\ "max-exp\">
+    <xsl:variable name="max-exp">
         <xsl:value-of select=\
-            "'0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'\" /> </xsl:variable>
-    <xsl:template name=\ "convertSciToNumString\">
-        <xsl:param name=\ "inputVal\" select=\ "0\" />
-        <xsl:variable name=\ "numInput\">
-            <xsl:value-of select=\ "translate(string($inputVal),'e','E')\" /> </xsl:variable>
+            "'0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'" /> </xsl:variable>
+    <xsl:template name="convertSciToNumString">
+        <xsl:param name="inputVal" select="0" />
+        <xsl:variable name="numInput">
+            <xsl:value-of select="translate(string($inputVal),'e','E')" /> </xsl:variable>
         <xsl:choose>
-            <xsl:when test=\ "number($numInput) = $numInput\">
-                <xsl:value-of select=\ "$numInput\" /> </xsl:when>
+            <xsl:when test="number($numInput) = $numInput">
+                <xsl:value-of select="$numInput" /> </xsl:when>
             <xsl:otherwise>
                 <!-- ==== Mantisa ==== -->
-                <xsl:variable name=\ "numMantisa\">
-                    <xsl:value-of select=\ "number(substring-before($numInput,'E'))\" /> </xsl:variable>
+                <xsl:variable name="numMantisa">
+                    <xsl:value-of select="number(substring-before($numInput,'E'))" /> </xsl:variable>
                 <!-- ==== Exponent ==== -->
-                <xsl:variable name=\ "numExponent\">
+                <xsl:variable name="numExponent">
                     <xsl:choose>
-                        <xsl:when test=\ "contains($numInput,'E+')\">
-                            <xsl:value-of select=\ "substring-after($numInput,'E+')\" /> </xsl:when>
+                        <xsl:when test="contains($numInput,'E+')">
+                            <xsl:value-of select="substring-after($numInput,'E+')" /> </xsl:when>
                         <xsl:otherwise>
-                            <xsl:value-of select=\ "substring-after($numInput,'E')\" /> </xsl:otherwise>
+                            <xsl:value-of select="substring-after($numInput,'E')" /> </xsl:otherwise>
                     </xsl:choose>
                 </xsl:variable>
                 <!-- ==== Coefficient ==== -->
-                <xsl:variable name=\ "numCoefficient\">
+                <xsl:variable name="numCoefficient">
                     <xsl:choose>
-                        <xsl:when test=\ "$numExponent > 0\">
+                        <xsl:when test="$numExponent > 0">
                             <xsl:text>1</xsl:text>
-                            <xsl:value-of select=\ "substring($max-exp, 1, number($numExponent))\" /> </xsl:when>
-                        <xsl:when test=\ "$numExponent &lt; 0\">
+                            <xsl:value-of select="substring($max-exp, 1, number($numExponent))" /> </xsl:when>
+                        <xsl:when test="$numExponent &lt; 0">
                             <xsl:text>0.</xsl:text>
-                            <xsl:value-of select=\ "substring($max-exp, 1, -number($numExponent)-1)\" />
+                            <xsl:value-of select="substring($max-exp, 1, -number($numExponent)-1)" />
                             <xsl:text>1</xsl:text>
                         </xsl:when>
                         <xsl:otherwise>1</xsl:otherwise>
                     </xsl:choose>
                 </xsl:variable>
-                <xsl:value-of select=\ "number($numCoefficient) * number($numMantisa)\" /> </xsl:otherwise>
+                <xsl:value-of select="number($numCoefficient) * number($numMantisa)" /> </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
 </xsl:stylesheet>
