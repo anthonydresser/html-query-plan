@@ -92,3 +92,5 @@ function drawArrow(draw: SVG.Doc, from: Point, to: Point, bendX: number) {
     });
 
 }
+
+export { drawSvgLines }

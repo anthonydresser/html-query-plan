@@ -37,4 +37,4 @@ function setDefaults(options: Options, defaults: Options) {
     return ret;
 }
 
-export { drawSvgLines as drawLines, showPlan }
+export { Options, drawSvgLines as drawLines, showPlan }

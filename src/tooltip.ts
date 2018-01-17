@@ -100,3 +100,5 @@ function hideTooltip() {
         currentTooltip = null;
     }
 }
+
+export { initTooltip }

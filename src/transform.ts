@@ -25,3 +25,5 @@ function setContentsUsingXslt(container: Element, xml: string, xslt: string) {
         container.appendChild(result);
     }
 }
+
+export { setContentsUsingXslt }
