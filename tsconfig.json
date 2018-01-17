@@ -3,8 +3,9 @@
         "noEmitOnError": true,
         "module": "commonjs",
         "sourceMap": true,
-        "allowJs": true,
-        "target": "es5"
+        // "allowJs": true,
+        "target": "es5",
+        "declaration": true
     },
     "exclude": [
         "node_modules"

@@ -96,3 +96,5 @@ function drawArrow(draw, from: ICoordinate, to: ICoordinate, bendX: number) {
     });
 
 }
+
+export { drawSvgLines }
