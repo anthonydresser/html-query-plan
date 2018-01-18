@@ -159,6 +159,22 @@
         </xsl:with-param>
       </xsl:call-template>
       <xsl:call-template name="ToolTipRow">
+        <xsl:with-param name="Label">Estimated Join Type</xsl:with-param>
+        <xsl:with-param name="Value" select="@EstimatedJoinType" />
+      </xsl:call-template>
+
+      <xsl:call-template name="ToolTipRow">
+        <xsl:with-param name="Condition" select="@IsAdaptive" />
+        <xsl:with-param name="Label">Is Adaptive</xsl:with-param>
+        <xsl:with-param name="Value">
+          <xsl:choose>
+            <xsl:when test="@IsAdaptive = 'true'">True</xsl:when>
+            <xsl:otherwise>False</xsl:otherwise>
+          </xsl:choose>
+        </xsl:with-param>
+      </xsl:call-template>
+
+      <xsl:call-template name="ToolTipRow">
         <xsl:with-param name="Label">Estimated Execution Mode</xsl:with-param>
         <xsl:with-param name="Value" select="@EstimatedExecutionMode" />
       </xsl:call-template>
@@ -460,6 +476,20 @@
       <div>
         <xsl:apply-templates select="." mode="ObjectName" />
       </div>
+    </xsl:for-each>
+  </xsl:template>
+  
+  <xsl:template match="s:AdaptiveJoin/s:HashKeysProbe" mode="ToolTipDetails">
+    <div class="qp-bold">Hash Keys Probe</div>
+    <xsl:for-each select="s:ColumnReference">
+      <div><xsl:apply-templates select="." mode="ObjectNameNoAlias" /></div>
+    </xsl:for-each>
+  </xsl:template>
+  
+  <xsl:template match="s:AdaptiveJoin/s:OuterReferences" mode="ToolTipDetails">
+    <div class="qp-bold">Outer References</div>
+    <xsl:for-each select="s:ColumnReference">
+      <div><xsl:apply-templates select="." mode="ObjectNameNoAlias" /></div>
     </xsl:for-each>
   </xsl:template>
   
