@@ -523,12 +523,36 @@
   <!-- Turns out using apply-templates for this was a bad idea, but its too big a change to fix it all right now. This is probably
   the template that should contain tooltip details, I'll try to refactor more stuff into here over time, maybe. -->
   <xsl:template name="ToolTipDetails">
+    <xsl:variable name="relop" select="." />
     <xsl:if test="s:Warnings">
       <div class="qp-bold">Warnings</div>
-      <xsl:if test="s:Warnings/@NoJoinPredicate=1 or s:Warnings/@NoJoinPredicate=true"><div>No Join Predicate</div></xsl:if>
-      <xsl:for-each select="s:UnmatchedIndexes/s:Parameterization/s:Object">
-        <div>Unmatched index: <xsl:apply-templates select="." mode="ObjectNameNoAlias" /></div>
-      </xsl:for-each>
+      <div>
+        <xsl:if test="s:Warnings/@NoJoinPredicate=1 or s:Warnings/@NoJoinPredicate=true"><div>No Join Predicate</div></xsl:if>
+        <xsl:for-each select="s:UnmatchedIndexes/s:Parameterization/s:Object">
+          <div>Unmatched index: <xsl:apply-templates select="." mode="ObjectNameNoAlias" /></div>
+        </xsl:for-each>
+        <xsl:for-each select="s:Warnings/s:SpillToTempDb">
+          <div>Operator used tempdb to spill data during execution with spill level <xsl:value-of select="@SpillLevel" /> and <xsl:value-of select="@SpilledThreadCount" /> spilled thread(s)</div>
+        </xsl:for-each>
+        <xsl:for-each select="s:Warnings/s:ColumnsWithNoStatistics/s:ColumnReference">
+          <div>Columns With No Statistics: <xsl:apply-templates select="." mode="ObjectNameNoAlias" /></div>
+        </xsl:for-each>
+        <xsl:for-each select="s:Warnings/s:Wait">
+          <div>The query had to wait <xsl:value-of select="@WaitTime" /> seconds for <xsl:value-of select="@WaitType" /> during execution.</div>
+        </xsl:for-each>
+        <xsl:for-each select="s:Warnings/s:PlanAffectingConvert">
+          <div>Type conversion in expression (<xsl:value-of select="@Expression" />) may affect "<xsl:value-of select="@ConvertIssue" />" in query plan choice.</div>
+        </xsl:for-each>
+        <xsl:for-each select="s:Warnings/s:SortSpillDetails">
+          <div><xsl:value-of select="$relop/@LogicalOp" /> wrote <xsl:value-of select="@WritesToTempDb" /> pages to and read <xsl:value-of select="@ReadsFromTempDb" /> pages from tempdb with granted memory <xsl:value-of select="@GrantedMemoryKb" />KB and used memory <xsl:value-of select="@UsedMemoryKb" />KB.</div>
+        </xsl:for-each>
+        <xsl:for-each select="s:Warnings/s:MemoryGrantWarning">
+          <div>The query memory grant detected "<xsl:value-of select="@GrantWarningKind" />", which may impact the reliability. Grant size: Initial <xsl:value-of select="@RequestedMemory" /> KB, Final <xsl:value-of select="@GrantedMemory" /> KB, Used <xsl:value-of select="@MaxUsedMemory" /> KB.</div>
+        </xsl:for-each>
+        <xsl:for-each select="s:Warnings/s:HashSpillDetails">
+          <div>Hash wrote <xsl:value-of select="@WritesToTempDb" /> pages to and read <xsl:value-of select="@ReadsFromTempDb" /> pages from tempdb with granted memory <xsl:value-of select="@GrantedMemoryKb" />KB and used memory <xsl:value-of select="@UsedMemoryKb" />KB.</div>
+        </xsl:for-each>
+      </div>
     </xsl:if>
   </xsl:template>
 
