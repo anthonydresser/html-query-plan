@@ -75,12 +75,17 @@
         <xsl:attribute name="data-statement-id"><xsl:value-of select="@StatementId" /></xsl:attribute>
       </xsl:if>
       <div>
-        <div class="qp-node">
-          <xsl:call-template name="NodeIcon" />
-          <div><xsl:apply-templates select="." mode="NodeLabel" /></div>
-          <xsl:apply-templates select="." mode="NodeLabel2" />
-          <xsl:apply-templates select="." mode="NodeCostLabel" />
-          <xsl:call-template name="ToolTip" />
+        <div class="qp-node-outer">
+          <div class="qp-node">
+            <xsl:if test="@NodeId">
+              <xsl:attribute name="data-node-id"><xsl:value-of select="@NodeId" /></xsl:attribute>
+            </xsl:if>
+            <xsl:call-template name="NodeIcon" />
+            <div><xsl:apply-templates select="." mode="NodeLabel" /></div>
+            <xsl:apply-templates select="." mode="NodeLabel2" />
+            <xsl:apply-templates select="." mode="NodeCostLabel" />
+            <xsl:call-template name="ToolTip" />
+          </div>
         </div>
       </div>
       <div><xsl:apply-templates select="*/*" mode="QpTr" /></div>
@@ -196,6 +201,7 @@
       </xsl:call-template>
       
       <xsl:call-template name="ToolTipRow">
+        <xsl:with-param name="Condition" select="s:RunTimeInformation" />
         <xsl:with-param name="Label">Actual Number of Rows</xsl:with-param>
         <xsl:with-param name="Value" select="sum(s:RunTimeInformation/s:RunTimeCountersPerThread/@ActualRows)" />
       </xsl:call-template>
