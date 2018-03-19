@@ -14,16 +14,5 @@ module.exports = {
     },
     plugins: development ? [] : [
         new webpack.optimize.UglifyJsPlugin({ compress: { warnings: false } })
-    ],
-    module: {
-        loaders: [
-            {
-                test: /\.js$/,
-                loader: 'babel-loader',
-                query: {
-                    presets: ['es2015']
-                }
-            }
-        ]
-    }
+    ]
 }
