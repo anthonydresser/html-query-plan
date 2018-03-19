@@ -234,6 +234,13 @@ div.qp-node:hover .qp-tt {
 .qp-node {
     position: relative;
     white-space: nowrap;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.qp-node-outer {
+    height: 76.4px;
+    display: table-cell;
 }
 
 .qp-tr {
@@ -242,7 +249,7 @@ div.qp-node:hover .qp-tt {
 
 .qp-tr>div {
     display: table-cell;
-    padding-left: 15px;
+    padding-left: 20px;
 }
 
 .qp-root {
@@ -256,5 +263,9 @@ div.qp-node:hover .qp-tt {
     height: 100%;
     top: 0;
     left: 0;
-    z-index: -1;
+    pointer-events: none;
+}
+
+.qp-root polyline {
+    pointer-events: auto;
 }

@@ -1,9 +1,10 @@
-﻿import * as transform from './transform';
-import { drawSvgLines } from './svgLines';
-import { initTooltip } from './tooltip';
+﻿import * as xml from "./xml";
+import { drawLines } from "./lines";
+import { initTooltip } from "./tooltip";
+import { Node } from "./node";
 
 declare function require(path: string) : any;
-let qpXslt = require('raw-loader!./qp.xslt');
+let qpXslt = require("raw-loader!./qp.xslt");
 
 interface Options {
     jsTooltips?: boolean
@@ -14,8 +15,9 @@ function showPlan(container: Element, planXml: string, options?: Options) {
         jsTooltips: true
     });
 
-    transform.setContentsUsingXslt(container, planXml, qpXslt);
-    drawSvgLines(container);
+    xml.setContentsUsingXslt(container, planXml, qpXslt);
+    container["xml"] = new DOMParser().parseFromString(planXml, "text/xml");
+    drawLines(container);
 
     if (options.jsTooltips) {
         initTooltip(container);
@@ -37,4 +39,4 @@ function setDefaults(options: Options, defaults: Options) {
     return ret;
 }
 
-export { Options, drawSvgLines as drawLines, showPlan }
+export { Options, drawLines, showPlan, Node }

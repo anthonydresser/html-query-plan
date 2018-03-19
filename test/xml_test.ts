@@ -1,7 +1,7 @@
-import * as assert from 'assert';
-import * as transform from '../src/transform';
+import { assert } from "chai";
+import * as xml from "../src/xml";
 
-describe("transform", () => {
+describe("xml", () => {
 
     describe("setContentsUsingXslt", () => {
 
@@ -13,17 +13,17 @@ describe("transform", () => {
 
         it("Transforms transforms XML and adds it to the container", () => {
 
-            let container = document.createElement('div');
-            transform.setContentsUsingXslt(container, '<test></test>', xslt);
+            let container = document.createElement("div");
+            xml.setContentsUsingXslt(container, "<test></test>", xslt);
             assert.equal("Hello, World!", container.innerHTML);
 
         });
 
-        it('Replaces the existing contents', () => {
+        it("Replaces the existing contents", () => {
 
-            let container = document.createElement('div');
-            container.innerHTML = 'Testing';
-            transform.setContentsUsingXslt(container, '<test></test>', xslt);
+            let container = document.createElement("div");
+            container.innerHTML = "Testing";
+            xml.setContentsUsingXslt(container, "<test></test>", xslt);
             assert.equal("Hello, World!", container.innerHTML);
 
         });

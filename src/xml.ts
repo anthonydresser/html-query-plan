@@ -1,8 +1,8 @@
 /**
  * Sets the contents of a container by transforming XML via XSLT.
- * @param container Container to set the contens for.
- * @param xml Input XML.
- * @param xslt XSLT transform to use.
+ * @param container {Element} Container to set the contens for.
+ * @param xml {string} Input XML.
+ * @param xslt {string} XSLT transform to use.
  */
 function setContentsUsingXslt(container: Element, xml: string, xslt: string) {
     if ((<any>window).ActiveXObject || "ActiveXObject" in window) {
@@ -21,7 +21,7 @@ function setContentsUsingXslt(container: Element, xml: string, xslt: string) {
         let xsltProcessor = new XSLTProcessor();
         xsltProcessor.importStylesheet(parser.parseFromString(xslt, "text/xml"));
         let result = xsltProcessor.transformToFragment(parser.parseFromString(xml, "text/xml"), document);
-        container.innerHTML = '';
+        container.innerHTML = "";
         container.appendChild(result);
     }
 }
