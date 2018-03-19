@@ -1,9 +1,13 @@
-import { findAncestor } from './utils'
+import { findAncestor, findAncestorP } from "./utils";
+import { Line } from "./node";
 
 const TOOLTIP_TIMEOUT = 500;
 
+// ID of the timeout used to delay showing the tooltip on mouseover.
 let timeoutId: number = null;
+// The currently visible tooltip, if one is shown; Otherwise, null.
 let currentTooltip: HTMLElement = null;
+// X & Y coordinates of the mouse cursor
 let cursorX: number = 0;
 let cursorY: number = 0;
 
@@ -11,17 +15,32 @@ function initTooltip(container: Element) {
     disableCssTooltips(container);
     trackMousePosition();
 
-    let nodes = container.querySelectorAll('.qp-node') as NodeListOf<HTMLElement>;
-
+    let nodes = container.querySelectorAll(".qp-node");
     for (let i = 0; i < nodes.length; i++) {
-        let node = nodes[i];
-        node.addEventListener("mouseover", () => {
-            onMouseover(node);
-        });
-        node.addEventListener("mouseout", (event: MouseEvent) => {
-            onMouseout(node, event);
+        addTooltip(nodes[i], e => <HTMLElement>e.querySelector(".qp-tt").cloneNode(true));
+    }
+
+    let lines = container.getElementsByTagName("polyline");
+    for (let i = 0; i < lines.length; i++) {
+        let line = new Line(lines[i]);
+        addTooltip(line.element, e => {
+            let parser = new DOMParser();
+            let document = parser.parseFromString(`
+                <div class="qp-tt"><table><tbody>
+                <tr>
+                    <th>Estimated Number of Rows</th>
+                    <td>${line.relOp.estimatedRows}</td>
+                </tr>
+                </tbody></tabke></div>
+            `, "text/html");
+            return <HTMLElement>document.getElementsByClassName("qp-tt")[0];
         });
     }
+}
+
+function addTooltip(node: Element, createTooltip: (e: Element) => HTMLElement) {
+    node.addEventListener("mouseover", () => onMouseover(node, createTooltip));
+    node.addEventListener("mouseout", (event: MouseEvent) => onMouseout(node, event));
 }
 
 function disableCssTooltips(container: Element) {
@@ -30,39 +49,36 @@ function disableCssTooltips(container: Element) {
 }
 
 function trackMousePosition() {
-    document.onmousemove = function(e){
+    document.onmousemove = e => {
         cursorX = e.pageX;
         cursorY = e.pageY;
     }
 }
 
-function onMouseover(node: Element) {
-    if (timeoutId != null) {
-        return;
-    }
-    timeoutId = window.setTimeout( () => {
-        showTooltip(node);
-    }, TOOLTIP_TIMEOUT);
+function onMouseover(node: Element, createTooltip: (e: Element) => HTMLElement) {
+    if (timeoutId != null) return;
+    timeoutId = window.setTimeout(() => showTooltip(node, createTooltip(node)), TOOLTIP_TIMEOUT);
 }
 
 function onMouseout(node: Element, event: MouseEvent) {
     // http://stackoverflow.com/questions/4697758/prevent-onmouseout-when-hovering-child-element-of-the-parent-absolute-div-withou
     let e = event.toElement || event.relatedTarget as Element;
-    if (e == node ||
-        findAncestor(e, 'qp-node') == node ||
-        (currentTooltip != null && (e == currentTooltip || findAncestor(e, 'qp-tt') == currentTooltip))) {
-        return;
-    }
+    // If the element currently under the mouse is still the node, don't hide the tooltip
+    if (e == node || e == currentTooltip) return;
+    // If the mouse hovers over child elements (e.g. the text in the tooltip or the text / icons in the node) then a mouseoout
+    // event is raised even though the mouse is still contained inside the node / tooltip. Search ancestors and don't hide the
+    // tooltip if this is the case
+    if (findAncestorP(e, x => x == node)) return;
+    if (findAncestorP(e, x => x == currentTooltip)) return;
     window.clearTimeout(timeoutId);
     timeoutId = null;
     hideTooltip();
 }
 
-function showTooltip(node: Element) {
+function showTooltip(node: Element, tooltip: HTMLElement) {
     hideTooltip();
     
     let positionY = cursorY;
-    let tooltip = <HTMLElement>node.querySelector(".qp-tt");
 
     // Nudge the tooptip up if its going to appear below the bottom of the page
     let documentHeight = getDocumentHeight();
@@ -76,10 +92,10 @@ function showTooltip(node: Element) {
         positionY = 10;
     }
 
-    currentTooltip = <HTMLElement>tooltip.cloneNode(true);
+    currentTooltip = tooltip;
     document.body.appendChild(currentTooltip);
-    currentTooltip.style.left = cursorX + 'px';
-    currentTooltip.style.top = positionY + 'px';
+    currentTooltip.style.left = cursorX + "px";
+    currentTooltip.style.top = positionY + "px";
     currentTooltip.addEventListener("mouseout", function (event) {
         onMouseout(node, event);
     });

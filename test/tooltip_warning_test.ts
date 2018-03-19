@@ -1,4 +1,4 @@
-import * as assert from "assert";
+import { assert } from "chai";
 import * as QP from "../src/index";
 import * as helper from "./helper";
 import { plan } from "./plans";
@@ -11,7 +11,7 @@ describe("Tooltip Warnings Section", () => {
         let tableScan = helper.findNodeById(container, "0");
         assert.equal(null, helper.getToolTipSection(tableScan, "Warnings"));
 
-    })
+    });
 
     // TODO: Test when @NoJoinPredicate=true, and @NoJoinPredicate is missing
     it("Shows No Join Predicate when s:Warnings/@NoJoinPredicate=1", () => {
@@ -21,16 +21,16 @@ describe("Tooltip Warnings Section", () => {
         assert.equal("No Join Predicate",
             helper.getToolTipSection(nestedLoops, "Warnings"));
         
-    })
+    });
     
     it("Shows unmatched indexes", () => {
 
         let container = helper.showPlan(plan.unmatched_index);
-        let select = helper.findStatmentElementById(container, "1");
+        let select = helper.findStatement(container, "1");
         assert.equal("Unmatched index: [Test].[dbo].[SAMPLE_TABLE].[IX_SAMPLE_TABLE__ID_2]",
             helper.getToolTipSection(select, "Warnings"));
 
-    })
+    });
 
     it("Shows ColumnsWithNoStatistics warning", () => {
 
@@ -39,7 +39,7 @@ describe("Tooltip Warnings Section", () => {
         assert.equal("Columns With No Statistics: [mydb].[myschema].[TestTableA].TestTableB_Id",
             helper.getToolTipSection(indexScan, "Warnings"));
 
-    })
+    });
 
     it("Shows SpillToTempDb warning", () => {
 
@@ -48,25 +48,25 @@ describe("Tooltip Warnings Section", () => {
         let sort = helper.findNodeById(container, "2");
         assert.equal(true, helper.getToolTipSection(sort, "Warnings").indexOf(expected) >= 0);
 
-    })
+    });
 
     it("Shows Wait warning", () => {
 
         const expected = "The query had to wait 58 seconds for Memory Grant during execution.";
         let container = helper.showPlan(plan.inequality_index);
-        let select = helper.findStatmentElementById(container, "1");
+        let select = helper.findStatement(container, "1");
         assert.equal(true, helper.getToolTipSection(select, "Warnings").indexOf(expected) >= 0);
 
-    })
+    });
 
     it("Shows PlanAffectingConvert warning", () => {
 
         const expected = "Type conversion in expression (CONVERT(varchar(150),[mcLive].[Cadastre].[OwnerPersonParsed].[Surname],0)) may affect \"Cardinality Estimate\" in query plan choice.";
         let container = helper.showPlan(plan.issue7);
-        let update = helper.findStatmentElementById(container, "12");
+        let update = helper.findStatement(container, "12");
         assert.equal(true, helper.getToolTipSection(update, "Warnings").indexOf(expected) >= 0);
 
-    })
+    });
 
     it("Shows SortSpillDetails warning", () => {
 
@@ -75,16 +75,16 @@ describe("Tooltip Warnings Section", () => {
         let sort = helper.findNodeById(container, "2");
         assert.equal(true, helper.getToolTipSection(sort, "Warnings").indexOf(expected) >= 0);
 
-    })
+    });
 
     it("Shows MemoryGrantWarning warning", () => {
 
         const expected = "The query memory grant detected \"Excessive Grant\", which may impact the reliability. Grant size: Initial 1395216 KB, Final 1395210 KB, Used 19736 KB.";
         let container = helper.showPlan(plan.inequality_index);
-        let select = helper.findStatmentElementById(container, "1");
+        let select = helper.findStatement(container, "1");
         assert.equal(true, helper.getToolTipSection(select, "Warnings").indexOf(expected) >= 0);
 
-    })
+    });
 
     it("Shows HashSpillDetails warning", () => {
 
@@ -93,6 +93,6 @@ describe("Tooltip Warnings Section", () => {
         let hashMatch = helper.findNodeById(container, "2");
         assert.equal(true, helper.getToolTipSection(hashMatch, "Warnings").indexOf(expected) >= 0);
 
-    })
+    });
 
-})
+});
