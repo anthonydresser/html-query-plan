@@ -162,4 +162,4 @@ function arrowPath(to: Point, from: Point, bendX: number, thickness: number) {
     ];
 }
 
-export { drawLines, arrowPath, thicknessesToOffsets, nodeToThickness }
+export { drawLines, arrowPath, thicknessesToOffsets, nodeToThickness, Point }
