@@ -1,6 +1,7 @@
-import { drawSvgLines } from './svgLines';
+import { drawLines } from "./lines";
+import { Node } from "./node";
 interface Options {
     jsTooltips?: boolean;
 }
 declare function showPlan(container: Element, planXml: string, options?: Options): void;
-export { Options, drawSvgLines as drawLines, showPlan };
+export { Options, drawLines, showPlan, Node };
