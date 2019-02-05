@@ -61,11 +61,14 @@ function thicknessesToOffsets(thicknesses: Array<number>, gap: number): Array<nu
  * @param node Node to work out the line thickness for.
  */
 function nodeToThickness(node: Node): number {
+    const minThickness = 2;
+    const maxThickness = 12;
+    
     let rows = 0;
     if (node.relOp != null) {
         rows = node.relOp.actualRows == null ? node.relOp.estimatedRows : node.relOp.actualRows;
     }
-    return Math.max(1, Math.min(Math.floor(Math.log(rows > 0 ? rows : 1)), 12));
+    return Math.max(minThickness, Math.min(Math.floor(Math.log(rows > 0 ? rows : 1)), maxThickness));
 }
 
 /**
@@ -91,6 +94,8 @@ function drawLinesForParent(draw: SVG.Doc, clientRect: ClientRect, parent: Node)
  * @param clientRect Bounding client rect of the root SVG context.
  * @param parent Node element from which to draw the arrow (leftmost node).
  * @param child Node element to which to draw the arrow (rightmost node).
+ * @param thickness Line thickness, in pixels.
+ * @param offset Offset from the centerline, in pixels.
  */
 function drawArrowBetweenNodes(draw: SVG.Doc, clientRect: ClientRect, parent: Node, child: Node, thickness: number, offset: number) {
     let parentOffset = parent.element.getBoundingClientRect();
@@ -101,6 +106,12 @@ function drawArrowBetweenNodes(draw: SVG.Doc, clientRect: ClientRect, parent: No
 
     let fromX = childOffset.left;
     let fromY = (childOffset.top + childOffset.bottom) / 2;
+
+    // Sometimes the node positioning doesn't quite work out and you end up with very small "kinks" in the lines between
+    // nodes that seem like they should have straight lines
+    if (Math.abs(fromY - toY) < 5) {
+        fromY = toY;
+    }
 
     let midOffsetLeft = toX / 2 + fromX / 2;
 

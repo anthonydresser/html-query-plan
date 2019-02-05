@@ -42,7 +42,7 @@ class RelOp {
     /**
      * Gets the estimated row size in bytes.
      */
-    get estimatestimatedRowSize(): number {
+    get estimatedRowSize(): number {
         return parseInt(this.element.attributes["AvgRowSize"].value);
     }
 
@@ -50,7 +50,7 @@ class RelOp {
      * Gets the estimated total size of the data.
      */
     get estimatedDataSize(): number {
-        return Math.round(this.estimatestimatedRowSize * this.estimatedRows);
+        return Math.round(this.estimatedRowSize * this.estimatedRows);
     }
 
     /**
@@ -182,7 +182,8 @@ class Line {
      * Gets a wrapped RelOp instance for this nodes RelOp query plan XML.
      */
     get relOp(): RelOp {
-        return this.nodeXml ? new RelOp(this.nodeXml) : null;
+        let nodeXml = this.nodeXml;
+        return nodeXml && nodeXml.tagName == "RelOp" ? new RelOp(this.nodeXml) : null;
     }
 }
 

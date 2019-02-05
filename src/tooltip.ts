@@ -24,16 +24,7 @@ function initTooltip(container: Element) {
     for (let i = 0; i < lines.length; i++) {
         let line = new Line(lines[i]);
         addTooltip(line.element, e => {
-            let parser = new DOMParser();
-            let document = parser.parseFromString(`
-                <div class="qp-tt"><table><tbody>
-                <tr>
-                    <th>Estimated Number of Rows</th>
-                    <td>${line.relOp.estimatedRows}</td>
-                </tr>
-                </tbody></tabke></div>
-            `, "text/html");
-            return <HTMLElement>document.getElementsByClassName("qp-tt")[0];
+            return buildLineTooltip(line);
         });
     }
 }
@@ -57,7 +48,10 @@ function trackMousePosition() {
 
 function onMouseover(node: Element, createTooltip: (e: Element) => HTMLElement) {
     if (timeoutId != null) return;
-    timeoutId = window.setTimeout(() => showTooltip(node, createTooltip(node)), TOOLTIP_TIMEOUT);
+    timeoutId = window.setTimeout(() => {
+        var tooltip = createTooltip(node);
+        if (tooltip != null) showTooltip(node, tooltip);
+    }, TOOLTIP_TIMEOUT);
 }
 
 function onMouseout(node: Element, event: MouseEvent) {
@@ -117,4 +111,60 @@ function hideTooltip() {
     }
 }
 
-export { initTooltip }
+/**
+ * Builds the tooltip HTML for a Line.
+ * @param line Line to build the tooltip for.
+ */
+function buildLineTooltip(line: Line) : HTMLElement {
+    if (line.relOp == null) return null;
+    let parser = new DOMParser();
+    let actualNumberOfRows = line.relOp.actualRows != null ? 
+        `<tr>
+            <th>Actual Number of Rows</th>
+            <td>${line.relOp.actualRows}</td>
+        </tr>` : '';
+
+    let numberOfRowsRead = line.relOp.actualRowsRead != null ?
+        `<tr>
+            <th>Number of Rows Read</th>
+            <td>${line.relOp.actualRowsRead}</td>
+        </tr>` : '';
+
+    let document = parser.parseFromString(`
+        <div class="qp-tt"><table><tbody>
+        ${actualNumberOfRows}
+        ${numberOfRowsRead}
+        <tr>
+            <th>Estimated Number of Rows</th>
+            <td>${line.relOp.estimatedRows}</td>
+        </tr>
+        <tr>
+            <th>Estimated Row Size</th>
+            <td>${convertSize(line.relOp.estimatedRowSize)}</td>
+        </tr>
+        <tr>
+            <th>Estimated Data Size</th>
+            <td>${convertSize(line.relOp.estimatedDataSize)}</td>
+        </tr>
+        </tbody></tabke></div>
+    `, "text/html");
+    return <HTMLElement>document.getElementsByClassName("qp-tt")[0];
+}
+
+/**
+ * Convets sizes to human readable strings.
+ * @param b Size in bytes.
+ */
+function convertSize(b: number) : string {
+    if (b >= 10000) {
+        let kb = b / 1024;
+        if (kb >= 10000) {
+            let mb = kb / 1024;
+            return `${Math.round(mb)} MB`;
+        }
+        return `${Math.round(kb)} KB`;
+    }
+    return `${b} B`;
+}
+
+export { initTooltip, buildLineTooltip, convertSize }
