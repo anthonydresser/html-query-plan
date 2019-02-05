@@ -23,10 +23,13 @@
 
   <xsl:template match="s:BatchSequence/s:Batch/s:Statements/*" mode="Statement">
     <div class="qp-statement-header">
+      <hr/>
       <div class="qp-statement-header-row">
+        <div> Query <xsl:value-of select="@StatementId" /> </div>
         <div><xsl:value-of select="@StatementText" /></div>
       </div>
       <xsl:apply-templates select="s:QueryPlan/s:MissingIndexes/s:MissingIndexGroup" mode="MissingIndex" />
+      <hr/>
     </div>
     <xsl:apply-templates select="." mode="QpTr" />
   </xsl:template>
