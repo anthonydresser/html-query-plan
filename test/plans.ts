@@ -30,6 +30,14 @@ var plan = {
     unmatched_index: require("raw-loader!../test_plans/unmatched_index.sqlplan"),
     columns_with_no_statistics: require("raw-loader!../test_plans/columns_with_no_statistics.sqlplan"),
     spilltotempdb: require("raw-loader!../test_plans/spilltotempdb.sqlplan"),
-    HashSpillDetails: require("raw-loader!../test_plans/HashSpillDetails.sqlplan")
+    HashSpillDetails: require("raw-loader!../test_plans/HashSpillDetails.sqlplan"),
+    columnstore_index_insert: require("raw-loader!../test_plans/Columnstore/columnstore_index_insert.sqlplan"),
+    columnstore_index_delete: require("raw-loader!../test_plans/Columnstore/columnstore_index_delete.sqlplan"),
+    columnstore_index_update: require("raw-loader!../test_plans/Columnstore/columnstore_index_update.sqlplan"),
+    columnstore_index_merge: require("raw-loader!../test_plans/Columnstore/columnstore_index_merge.sqlplan"),
+    clustered_index_merge: require("raw-loader!../test_plans/clustered_index_merge.sqlplan"),
+    deleted_scan: require("raw-loader!../test_plans/deleted_scan.sqlplan"),
+    table_merge: require("raw-loader!../test_plans/table_merge.sqlplan"),
+    udx: require("raw-loader!../test_plans/udx.sqlplan")
 }
 export { plan };

@@ -3,6 +3,7 @@ test_plans
 typings
 src
 examples
+node_modules/
 out
 karma.config.js
 gulpfile.js
@@ -10,3 +11,4 @@ screenshot.png
 tsconfig.json
 webpack.config.js
 webpack.release.config.js
+*.log

@@ -77,4 +77,133 @@ describe("Query Plan Icon", () => {
 
     });
 
+    it("Shows Cond icon for COND nodes", () => {
+
+        let container = helper.showPlan(plan.StmtCond);
+        let cond = helper.findStatement(container);
+        assert.notEqual(null, cond.element.querySelector(".qp-icon-StmtCond"));
+
+    });
+
+    it("Shows ColumnStoreIndexScan icon for Columnstore Index Scan nodes", () => {
+
+        let container = helper.showPlan(plan.adaptive_join);
+        let cond = helper.findNodeById(container, "2");
+        assert.notEqual(null, cond.element.querySelector(".qp-icon-ColumnStoreIndexScan"));
+
+    });
+
+    it("Shows ColumnStoreIndexInsert icon for Columnstore Index Insert nodes", () => {
+
+        let container = helper.showPlan(plan.columnstore_index_insert);
+        let insert = helper.findNodeById(container, "0");
+        assert.notEqual(null, insert.element.querySelector(".qp-icon-ColumnStoreIndexInsert"));
+        assert.equal('Columnstore Index Insert', helper.getNodeLabel(insert));
+
+    });
+
+    it("Shows ColumnStoreIndexDelete icon for Columnstore Index Delete nodes", () => {
+
+        let container = helper.showPlan(plan.columnstore_index_delete);
+        let del = helper.findNodeById(container, "0");
+        assert.notEqual(null, del.element.querySelector(".qp-icon-ColumnStoreIndexDelete"));
+        assert.equal('Columnstore Index Delete', helper.getNodeLabel(del));
+
+    });
+
+    it("Shows ColumnStoreIndexUpdate icon for Columnstore Index Update nodes", () => {
+
+        let container = helper.showPlan(plan.columnstore_index_update);
+        let update = helper.findNodeById(container, "1");
+        assert.notEqual(null, update.element.querySelector(".qp-icon-ColumnStoreIndexUpdate"));
+        assert.equal('Columnstore Index Update', helper.getNodeLabel(update));
+
+    });
+
+    it("Shows ColumnStoreIndexMerge icon for Columnstore Index Merge nodes", () => {
+
+        let container = helper.showPlan(plan.columnstore_index_merge);
+        let merge = helper.findNodeById(container, "1");
+        assert.notEqual(null, merge.element.querySelector(".qp-icon-ColumnStoreIndexMerge"));
+        assert.equal('Columnstore Index Merge', helper.getNodeLabel(merge));
+        
+    });
+
+    it("Shows ClustredIndexMerge icon for Clustered Index Merge nodes", () => {
+
+        let container = helper.showPlan(plan.clustered_index_merge);
+        let cond = helper.findNodeById(container, "1");
+        assert.notEqual(null, cond.element.querySelector(".qp-icon-ClusteredIndexMerge"));
+
+    });
+
+    it("Shows DeletedScan icon for Deleted Scan nodes", () => {
+
+        let container = helper.showPlan(plan.deleted_scan);
+        let cond = helper.findNodeById(container, "3", "2");
+        assert.notEqual(null, cond.element.querySelector(".qp-icon-DeletedScan"));
+
+    });
+
+    it("Shows TableMerge icon for Table Merge nodes", () => {
+
+        let container = helper.showPlan(plan.table_merge);
+        let cond = helper.findNodeById(container, "1");
+        assert.notEqual(null, cond.element.querySelector(".qp-icon-TableMerge"));
+
+    });
+
+    it("Shows UDX icon for UDX nodes", () => {
+
+        let container = helper.showPlan(plan.udx);
+        let cond = helper.findNodeById(container, "5");
+        assert.notEqual(null, cond.element.querySelector(".qp-icon-UDX"));
+
+    });
+
+    it("Shows WindowAggregate icon for UDX nodes", () => {
+
+        let container = helper.showPlan(plan.batchMode);
+        let cond = helper.findNodeById(container, "2");
+        assert.notEqual(null, cond.element.querySelector(".qp-icon-WindowAggregate"));
+
+    });
+
+    describe("Batch Icon", () => {
+
+        it("shows if @EstimatedExecutionMode is Batch", () => {
+
+            let container = helper.showPlan(plan.adaptive_join_estimated);
+            let scan = helper.findNodeById(container, "2");
+            assert.notEqual(null, scan.element.querySelector(".qp-iconbatch"));
+
+        });
+
+        it("dDoes not show if @EstimatedExecutionMode is not Batch", () => {
+
+            let container = helper.showPlan(plan.adaptive_join_estimated);
+            let scan = helper.findNodeById(container, "0");
+            assert.equal(null, scan.element.querySelector(".qp-iconbatch"));
+
+        });
+
+        it("does not show if actual execution mode is not batch", () => {
+
+            // The actual execution should "override" if estimated exectuon mode, if present
+            let container = helper.showPlan(plan.adaptive_join);
+            let scan = helper.findNodeById(container, "7");
+            assert.equal(null, scan.element.querySelector(".qp-iconbatch"));
+
+        });
+
+        it("shows if actual execution mode is batch", () => {
+
+            let container = helper.showPlan(plan.columnstore_index_update);
+            let scan = helper.findNodeById(container, "4");
+            assert.notEqual(null, scan.element.querySelector(".qp-iconbatch"));
+
+        });
+
+    });
+
 });

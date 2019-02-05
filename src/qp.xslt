@@ -20,33 +20,19 @@
   <!-- Outermost div that contains all statement plans. -->
   <xsl:template match="s:ShowPlanXML">
     <div class="qp-root">
-      <xsl:apply-templates select="s:BatchSequence/s:Batch/s:Statements/*" mode="StatementRow" />  
+      <xsl:apply-templates select="s:BatchSequence/s:Batch/s:Statements/*" mode="Statement" />  
     </div>
   </xsl:template>
 
-  <xsl:template match="s:StmtSimple|s:StmtUseDb|s:StmtCond|s:StmtCursor" mode="StatementRow">
-        <div class="qp-statement-header">
-            <xsl:if test="@StatementText">
-                <div>
-                    <hr/>
-                    <div> Query
-                        <xsl:value-of select="@StatementId" /> </div>
-                    <div>
-                        <xsl:value-of select="@StatementText" /> </div>
-                    <div>
-                        <xsl:apply-templates select="s:QueryPlan/s:MissingIndexes/s:MissingIndexGroup/*" mode="MissingIndexRow" /> </div>
-                    <hr/> </div>
-            </xsl:if>
-            <div>
-                <xsl:apply-templates select="." mode="QpTr" /> </div>
-        </div>
-    </xsl:template>
   <xsl:template match="s:BatchSequence/s:Batch/s:Statements/*" mode="Statement">
     <div class="qp-statement-header">
+      <hr/>
       <div class="qp-statement-header-row">
+        <div> Query <xsl:value-of select="@StatementId" /> </div>
         <div><xsl:value-of select="@StatementText" /></div>
       </div>
       <xsl:apply-templates select="s:QueryPlan/s:MissingIndexes/s:MissingIndexGroup" mode="MissingIndex" />
+      <hr/>
     </div>
     <xsl:apply-templates select="." mode="QpTr" />
   </xsl:template>
@@ -213,7 +199,6 @@
       </xsl:call-template>
 
       <xsl:call-template name="ToolTipRow">
-        <xsl:with-param name="Condition" select="@EstimateIO | @EstimateCPU" />
         <xsl:with-param name="Label">Estimated Operator Cost</xsl:with-param>
         <xsl:with-param name="Value">
           <xsl:variable name="EstimatedOperatorCost">
@@ -222,9 +207,15 @@
           <xsl:variable name="TotalCost">
             <xsl:value-of select="ancestor::s:QueryPlan/s:RelOp/@EstimatedTotalSubtreeCost" />
           </xsl:variable>
+          <xsl:variable name="Percentage">
+            <xsl:choose>
+              <xsl:when test="$TotalCost > 0"><xsl:value-of select="number($EstimatedOperatorCost) div number($TotalCost)" /></xsl:when>
+              <xsl:otherwise>0</xsl:otherwise>
+            </xsl:choose>
+          </xsl:variable>
           <xsl:call-template name="round">
             <xsl:with-param name="value" select="$EstimatedOperatorCost" />
-          </xsl:call-template> (<xsl:value-of select="format-number(number($EstimatedOperatorCost) div number($TotalCost), '0%')" />)</xsl:with-param>
+          </xsl:call-template> (<xsl:value-of select="format-number($Percentage, '0%')" />)</xsl:with-param>
       </xsl:call-template>
 
       <xsl:call-template name="ToolTipRow">
@@ -346,7 +337,12 @@
   <xsl:template name="EstimatedOperatorCost">
     <xsl:variable name="EstimatedTotalSubtreeCost">
       <xsl:call-template name="convertSciToNumString">
-        <xsl:with-param name="inputVal" select="@EstimatedTotalSubtreeCost" />
+        <xsl:with-param name="inputVal">
+          <xsl:choose>
+            <xsl:when test="@EstimatedTotalSubtreeCost"><xsl:value-of select="@EstimatedTotalSubtreeCost" /></xsl:when>
+            <xsl:otherwise>0</xsl:otherwise>
+          </xsl:choose>
+        </xsl:with-param>
       </xsl:call-template>
     </xsl:variable>
     <xsl:variable name="ChildEstimatedSubtreeCost">
@@ -594,20 +590,33 @@
         <xsl:when test="s:CursorPlan/@CursorActualType"><xsl:value-of select="s:CursorPlan/@CursorActualType" /></xsl:when>
         <xsl:when test="@OperationType"><xsl:value-of select="@OperationType" /></xsl:when>
         <xsl:when test="s:IndexScan/@Lookup">KeyLookup</xsl:when>
+        <xsl:when test="s:IndexScan/@Storage = 'ColumnStore'">ColumnStoreIndexScan</xsl:when>
+        <xsl:when test="s:ScalarInsert/s:Object/@Storage = 'ColumnStore'">ColumnStoreIndexInsert</xsl:when>
+        <xsl:when test="s:Update/s:Object/@Storage = 'ColumnStore'">ColumnStoreIndex<xsl:value-of select="@LogicalOp" /></xsl:when>
         <xsl:when test="s:TableValuedFunction">TableValuedFunction</xsl:when>
         <!-- Use the physical operation to determine icon if it is present. -->
         <xsl:when test="@PhysicalOp"><xsl:value-of select="translate(@PhysicalOp, ' ', '')" /></xsl:when>
         <!-- Matches all statements. -->
         <xsl:when test="local-name() = 'StmtSimple'">Statement</xsl:when>
         <xsl:when test="local-name() = 'StmtCursor'">StmtCursor</xsl:when>
+        <xsl:when test="local-name() = 'StmtCond'">StmtCond</xsl:when>
         <!-- Fallback - show the Bitmap icon. -->
         <xsl:otherwise>Catchall</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <xsl:variable name="executionMode">
+      <xsl:choose>
+        <xsl:when test="s:RunTimeInformation/s:RunTimeCountersPerThread/@ActualExecutionMode">
+          <xsl:value-of select="s:RunTimeInformation/s:RunTimeCountersPerThread/@ActualExecutionMode" />
+        </xsl:when>
+        <xsl:otherwise><xsl:value-of select="@EstimatedExecutionMode" /></xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
     <xsl:element name="div">
       <xsl:attribute name="class">qp-icon-<xsl:value-of select="$iconName" /></xsl:attribute>
       <xsl:if test="s:Warnings or s:QueryPlan/s:Warnings"><div class="qp-iconwarn" /></xsl:if>
       <xsl:if test="@Parallel='1' or @Parallel='true'"><div class="qp-iconpar" /></xsl:if>
+      <xsl:if test="$executionMode='Batch'"><div class="qp-iconbatch" /></xsl:if>
     </xsl:element>
   </xsl:template>
 
@@ -618,6 +627,8 @@
   The following section contains templates used to determine the first (main) label for a node.
   -->
 
+  <xsl:template match="s:RelOp[s:ScalarInsert/s:Object/@Storage='ColumnStore']" mode="NodeLabel">Columnstore Index Insert</xsl:template>
+  <xsl:template match="s:RelOp[s:Update/s:Object/@Storage='ColumnStore']" mode="NodeLabel">Columnstore Index <xsl:value-of select="@LogicalOp"/></xsl:template>
   <xsl:template match="s:RelOp[s:IndexScan]" mode="NodeLabel">
     <xsl:choose>
       <xsl:when test="s:IndexScan/@Storage='ColumnStore'">Columnstore Index Scan</xsl:when>
