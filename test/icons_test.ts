@@ -1,18 +1,17 @@
 import { assert } from "chai";
-import * as QP from "../src/index";
 import * as helper from "./helper";
 import { plan } from "./plans";
 
 describe("Query Plan Icon", () => {
 
     it("is based on @LogicalOp when @PhysicalOp=Parallelism", () => {
-        
+
         let container = helper.showPlan(plan.batchMode);
         let parallelism = helper.findNodeById(container, "0");
         assert.notEqual(null, parallelism.element.querySelector(".qp-icon-GatherStreams"));
-        
+
     });
-    
+
     it("equals qp-icon-Statement for statements", () => {
 
         let container = helper.showPlan(plan.batchMode);
@@ -126,7 +125,7 @@ describe("Query Plan Icon", () => {
         let merge = helper.findNodeById(container, "1");
         assert.notEqual(null, merge.element.querySelector(".qp-icon-ColumnStoreIndexMerge"));
         assert.equal('Columnstore Index Merge', helper.getNodeLabel(merge));
-        
+
     });
 
     it("Shows ClustredIndexMerge icon for Clustered Index Merge nodes", () => {

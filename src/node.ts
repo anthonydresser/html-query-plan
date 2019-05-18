@@ -1,6 +1,6 @@
 import { findAncestor, findAncestorP } from "./utils";
 
-function find(nodes, type: string) {
+function find(nodes, type: string): any[] {
     let returnValue = [];
     for (let i = 0; i < nodes.length; i++) {
         if (nodes[i].nodeName === type) {
@@ -12,11 +12,13 @@ function find(nodes, type: string) {
 
 function getNodeXml(queryPlanXml: Element, statementId: string, nodeId: string): Element {
     let statement = queryPlanXml.querySelector(`[StatementId="${statementId}"]`);
-    if (!nodeId) return statement;
+    if (!nodeId) {
+        return statement;
+    }
     let elements = statement.getElementsByTagName("RelOp");
     for (let i = 0; i < elements.length; i++) {
         let element = elements[i];
-        if (element.attributes["NodeId"] && element.attributes["NodeId"].value == nodeId) {
+        if (element.attributes["NodeId"] && element.attributes["NodeId"].value === nodeId) {
             return element;
         }
     }
@@ -28,8 +30,12 @@ function getNodeXml(queryPlanXml: Element, statementId: string, nodeId: string):
  */
 class RelOp {
     constructor (readonly element: Element) {
-        if (!this.element) throw new Error("element cannot be null");
-        if (this.element.tagName != "RelOp") throw new Error("element must be a RelOp element");
+        if (!this.element) {
+            throw new Error("element cannot be null");
+        }
+        if (this.element.tagName !== "RelOp") {
+            throw new Error("element must be a RelOp element");
+        }
     }
 
     /**
@@ -43,7 +49,7 @@ class RelOp {
      * Gets the estimated row size in bytes.
      */
     get estimatedRowSize(): number {
-        return parseInt(this.element.attributes["AvgRowSize"].value);
+        return parseInt(this.element.attributes["AvgRowSize"].value, 10);
     }
 
     /**
@@ -59,7 +65,7 @@ class RelOp {
      */
     get runtimeCountersPerThread(): Element[] {
         let runtimeInformation = find(this.element.childNodes, "RunTimeInformation");
-        if (runtimeInformation.length == 0) {
+        if (runtimeInformation.length === 0) {
             return [];
         }
         return find(runtimeInformation[0].childNodes, "RunTimeCountersPerThread");
@@ -69,7 +75,7 @@ class RelOp {
      * Gets the actual number of rows returned by the operation.
      */
     get actualRows(): number {
-        return this.runtimeCountersPerThread.length == 0 ? null
+        return this.runtimeCountersPerThread.length === 0 ? null
             : this.runtimeCountersPerThread.reduce((a, b) => a + parseFloat(b.attributes["ActualRows"].value), 0);
     }
 
@@ -77,18 +83,22 @@ class RelOp {
      * Gets the actual number of rows read.
      */
     get actualRowsRead(): number {
-        return this.runtimeCountersPerThread.length == 0 || !this.runtimeCountersPerThread[0].attributes["ActualRowsRead"] ? null
+        return this.runtimeCountersPerThread.length === 0 || !this.runtimeCountersPerThread[0].attributes["ActualRowsRead"] ? null
             : this.runtimeCountersPerThread.reduce((a, b) => a + parseFloat(b.attributes["ActualRowsRead"].value), 0);
     }
 }
 
 /**
- * Wraps the HTML element represending a node in a query plan.
+ * Wraps the HTML element representing a node in a query plan.
  */
 class Node {
     constructor (readonly element: Element) {
-        if (!this.element) throw new Error("element cannot be null");
-        if (this.element.className != "qp-node") throw new Error("element must have class qp-node");
+        if (!this.element) {
+            throw new Error("element cannot be null");
+        }
+        if (this.element.className !== "qp-node") {
+            throw new Error("element must have class qp-node");
+        }
     }
 
     /**
@@ -135,7 +145,7 @@ class Node {
      */
     get relOp(): RelOp {
         let nodeXml = this.nodeXml;
-        return nodeXml && nodeXml.tagName == "RelOp" ? new RelOp(this.nodeXml) : null;
+        return nodeXml && nodeXml.tagName === "RelOp" ? new RelOp(this.nodeXml) : null;
     }
 }
 
@@ -144,8 +154,12 @@ class Node {
  */
 class Line {
     constructor (readonly element: Element) {
-        if (!this.element) throw new Error("element cannot be null");
-        if (this.element.nodeName != "polyline") throw new Error("element must be a polyline");
+        if (!this.element) {
+            throw new Error("element cannot be null");
+        }
+        if (this.element.nodeName !== "polyline") {
+            throw new Error("element must be a polyline");
+        }
     }
 
     /**
@@ -183,8 +197,8 @@ class Line {
      */
     get relOp(): RelOp {
         let nodeXml = this.nodeXml;
-        return nodeXml && nodeXml.tagName == "RelOp" ? new RelOp(this.nodeXml) : null;
+        return nodeXml && nodeXml.tagName === "RelOp" ? new RelOp(this.nodeXml) : null;
     }
 }
 
-export { Node, Line, RelOp }
+export { Node, Line, RelOp };
