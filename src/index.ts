@@ -3,14 +3,14 @@ import { drawLines } from "./lines";
 import { initTooltip } from "./tooltip";
 import { Node } from "./node";
 
-declare function require(path: string) : any;
+declare function require(path: string): any;
 let qpXslt = require("raw-loader!./qp.xslt");
 
 interface Options {
-    jsTooltips?: boolean
+    jsTooltips?: boolean;
 }
 
-function showPlan(container: Element, planXml: string, options?: Options) {
+function showPlan(container: Element, planXml: string, options?: Options): void {
     options = setDefaults(options, {
         jsTooltips: true
     });
@@ -24,7 +24,7 @@ function showPlan(container: Element, planXml: string, options?: Options) {
     }
 }
 
-function setDefaults(options: Options, defaults: Options) {
+function setDefaults(options: Options, defaults: Options): {} {
     let ret = {};
     for (let attr in defaults) {
         if (defaults.hasOwnProperty(attr)) {
@@ -39,4 +39,5 @@ function setDefaults(options: Options, defaults: Options) {
     return ret;
 }
 
-export { Options, drawLines, showPlan, Node }
+export { Options, drawLines, showPlan, Node };
+

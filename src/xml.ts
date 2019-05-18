@@ -1,10 +1,10 @@
 /**
  * Sets the contents of a container by transforming XML via XSLT.
- * @param container {Element} Container to set the contens for.
+ * @param container {Element} Container to set the contents for.
  * @param xml {string} Input XML.
  * @param xslt {string} XSLT transform to use.
  */
-function setContentsUsingXslt(container: Element, xml: string, xslt: string) {
+function setContentsUsingXslt(container: Element, xml: string, xslt: string): void {
     if ((<any>window).ActiveXObject || "ActiveXObject" in window) {
         let xsltDoc = new ActiveXObject("Microsoft.xmlDOM");
         xsltDoc.async = false;
@@ -14,7 +14,7 @@ function setContentsUsingXslt(container: Element, xml: string, xslt: string) {
         xmlDoc.async = false;
         xmlDoc.loadXML(xml);
 
-        let result = xmlDoc.transformNode(xsltDoc)
+        let result = xmlDoc.transformNode(xsltDoc);
         container.innerHTML = result;
     } else if (document.implementation && document.implementation.createDocument) {
         let parser = new DOMParser();
@@ -26,4 +26,4 @@ function setContentsUsingXslt(container: Element, xml: string, xslt: string) {
     }
 }
 
-export { setContentsUsingXslt }
+export { setContentsUsingXslt };
