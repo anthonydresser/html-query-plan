@@ -1,10 +1,10 @@
 const gulp = require('gulp');
 const ts = require('gulp-typescript');
 const merge = require('merge2');
-const sm = require('gulp-sourcemaps');
-const through = require('through2');
 const del = require('del');
 const webpack = require('gulp-webpack');
+const gulpTslint = require('gulp-tslint');
+const tslint = require('tslint');
 var argv = require('yargs').argv;
 
 const tsproj = ts.createProject('./tsconfig.json');
@@ -20,7 +20,7 @@ const resources = [
 gulp.task('compile', () => {
     let tsResult = gulp.src(['src/**/*.ts', 'typings/**/*.ts'])
         .pipe(tsproj());
-    
+
     let move = gulp.src(resources);
 
     return merge([
@@ -43,4 +43,17 @@ gulp.task('release', ['clean', 'compile'], () => {
         webpackfiles.pipe(gulp.dest('./dist')),
         typings.pipe(gulp.dest('./dist'))
     ]);
+});
+
+gulp.task('tslint', () => {
+    var program = tslint.Linter.createProgram('tsconfig.json');
+    return gulp.src([
+        'src/**/*.ts'
+    ])
+    .pipe((gulpTslint({
+        program,
+        formatter: "verbose",
+        rulesDirectory: "node_modules/tslint-microsoft-contrib"
+    })))
+    .pipe(gulpTslint.report());
 });
